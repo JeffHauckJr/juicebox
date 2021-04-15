@@ -27,7 +27,10 @@ async function createTables() {
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
-        password varchar(255) NOT NULL
+        password varchar(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+      location VARCHAR(255) NOT NULL,
+      active BOOLEAN DEFAULT true
       );
     `);
 
@@ -42,9 +45,9 @@ async function createInitialUsers() {
   try {
     console.log("Starting to create users...");
 
-    await createUser({ username: 'albert', password: 'bertie99' });
-    await createUser({ username: 'sandra', password: '2sandy4me' });
-    await createUser({ username: 'glamgal', password: 'soglam' });
+    await createUser({ username: 'albert', password: 'bertie99', name: 'Albert', location: 'Sidney, Australia' });
+    await createUser({ username: 'sandra', password: '2sandy4me', name: 'Sandra', location: "Ain't Tellin" });
+    await createUser({ username: 'glamgal', password: 'soglam', name: 'Joshua', location: 'Upper East Side' });
 
     console.log("Finished creating users!");
   } catch (error) {
