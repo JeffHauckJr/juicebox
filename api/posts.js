@@ -21,7 +21,7 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
     postData.content = content
 
     const post = await createPost(postData);
-    res.send({ post });
+    res.send( post );
   } catch ({ name, message }) {
     next({ name, message });
   }
@@ -38,8 +38,14 @@ postsRouter.get("/", async (req, res) => {
   try {
     const allPosts = await getAllPosts();
 
-    const posts = allPosts.filter((post) => {
-      return post.active || (req.user && post.author.id === req.user.id) && post.active === true; 
+    const posts = allPosts.filter(post => {
+      if (post.active) {
+        return true;
+      }
+      if (req.user && post.author.id === req.user.id) {
+        return true;
+      }
+      return false;
     });
 
     res.send({

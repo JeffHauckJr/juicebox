@@ -16,35 +16,28 @@ tagsRouter.get('/', async (req, res) => {
     });
   });
 
-  // tagsRouter.get('/:tagName/posts', async (req, res, next) => {
-  //   const tagName = decodeURIComponent(req.params.tagName);
-  //   try {
-  //     const allTags = await getPostsByTagName(tagName);
-  //     const tags = allTags.filter((post) => {
-  //       return post.active || (req.user && post.author.id === req.user.id);  
-  //     });
-  //     res.send({
-  //       posts: tags,
-  //     })
-  //   } catch ({ name, message }) {
-  //     next({name, message});
-  //   }
-  // });
-
-  tagsRouter.get("/:tagName/posts", async (req, res, next) => {
-    // read the tagname from the params
+  tagsRouter.get('/:tagName/posts', async (req, res, next) => {
     const tagName = decodeURIComponent(req.params.tagName);
     try {
-      // use our method to get posts by tag name from the db
-      const posts = await getPostsByTagName(tagName);
-      // send out an object to the client { posts: // the posts }
-      res.send({
-        posts: posts,
+      const allTags = await getPostsByTagName(tagName);
+      const tags = allTags.filter(post => {
+        if (post.active) {
+          return true;
+        }
+        if (req.user && post.author.id === req.user.id) {
+          return true;
+        }
+        return false;
       });
+      
+      res.send({
+        posts: tags,
+      })
     } catch ({ name, message }) {
-      next({ name, message });
-      // forward the name and message to the error handler
+      next({name, message});
     }
   });
+
+
 
 module.exports = tagsRouter;
